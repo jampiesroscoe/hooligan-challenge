@@ -1,11 +1,10 @@
 {
   "ids": {
-    "UserStreams": 7
+    "UserStreams": 11
   },
   "models": {
     "UserStreams": {
-      "1": "{\"userId\":\"1\",\"sessionIds\":[\"1\",\"2\",\"3\"],\"noOfStreams\":3}",
-      "test": "{\"userId\":\"test\",\"sessionIds\":[\"1\",\"2\",\"3\"],\"noOfStreams\":3}"
+      "1": "{\"userId\":\"1\",\"sessionIds\":[\"1\",\"2\",\"3\"],\"noOfStreams\":3}"
     }
   }
 }

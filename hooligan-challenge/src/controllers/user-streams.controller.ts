@@ -2,6 +2,7 @@ import {repository} from '@loopback/repository';
 import {param, get, getModelSchemaRef, del, response} from '@loopback/rest';
 import {StreamsResponse, UserStreams} from '../models';
 import {UserStreamsRepository} from '../repositories';
+import {log} from '../helpers';
 
 export class UserStreamsController {
   constructor(
@@ -21,12 +22,15 @@ export class UserStreamsController {
   async getUserStreamsV1(
     @param.path.string('userId') id: string,
     @param.path.string('sessionId') sessionId: string,
-  ) {
+  ): Promise<StreamsResponse> {
     let userInfo: UserStreams;
+
+    log.info(`User streams request: userId: ${id} sessionId: ${sessionId}`);
 
     try {
       userInfo = await this.userStreamsRepository.findById(id);
     } catch (error) {
+      log.info('No current streams found for userId: ' + id);
       const freshUser = new UserStreams({
         userId: id,
         sessionIds: [sessionId],
@@ -34,6 +38,7 @@ export class UserStreamsController {
       });
 
       await this.userStreamsRepository.create(freshUser);
+      log.info(`new stream created for userId: ${id} sessionId: ${sessionId}`);
 
       return new StreamsResponse({
         userId: id,
@@ -47,6 +52,7 @@ export class UserStreamsController {
       userInfo.noOfStreams === 3 &&
       !userInfo.sessionIds.includes(sessionId)
     ) {
+      log.info(`Maximun amout of streams reached for userId ${id}`);
       return new StreamsResponse({
         userId: id,
         noOfStreams: userInfo.noOfStreams,
@@ -54,6 +60,9 @@ export class UserStreamsController {
         allow: false,
       });
     } else if (userInfo.sessionIds.includes(sessionId)) {
+      log.info(
+        `User iniated stream from existing session userId: ${id} sessionId:${sessionId}`,
+      );
       return new StreamsResponse({
         userId: id,
         noOfStreams: userInfo.noOfStreams,
@@ -64,6 +73,7 @@ export class UserStreamsController {
       userInfo.sessionIds.push(sessionId);
       userInfo.noOfStreams++;
       await this.userStreamsRepository.updateById(id, userInfo);
+      log.info(`New stream created for userId: ${id} sessionId: ${sessionId}`);
       return new StreamsResponse({
         userId: id,
         noOfStreams: userInfo.noOfStreams,

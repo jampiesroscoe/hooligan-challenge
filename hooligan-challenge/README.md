@@ -1,12 +1,10 @@
 # hooligan-challenge
 
-This application is generated using [LoopBack 4 CLI](https://loopback.io/doc/en/lb4/Command-line-interface.html) with the
-[initial project layout](https://loopback.io/doc/en/lb4/Loopback-application-layout.html).
+Loopback 4 was used to build this service.
 
 ## Install dependencies
 
-By default, dependencies were installed when this application was generated.
-Whenever dependencies in `package.json` are changed, run the following command:
+To install dependencies run the following command:
 
 ```sh
 npm install
@@ -26,7 +24,13 @@ npm start
 
 You can also run `node .` to skip the build step.
 
-Open http://127.0.0.1:3000 in your browser.
+Open http://127.0.0.1:3000 in your browser. To view the explorer and test the service using the explorer.
+
+## Tests
+
+```sh
+npm test
+```
 
 ## Rebuild the project
 
@@ -55,21 +59,16 @@ npm run lint:fix
 ```
 
 ## Other useful commands
-
-- `npm run migrate`: Migrate database schemas for models
-- `npm run openapi-spec`: Generate OpenAPI spec into a file
 - `npm run docker:build`: Build a Docker image for this application
 - `npm run docker:run`: Run this application inside a Docker container
 
-## Tests
-
-```sh
-npm test
-```
 
 ## What's next
 
-Please check out [LoopBack 4 documentation](https://loopback.io/doc/en/lb4/) to
-understand how you can continue to add features to this application.
+### Scaling
+To scale this solution a different storage method should be used, currently in-memory storage is used and a .json file is used for persistance. I would suggest using a Redis-cache to store the data as it is fast and can be cleared easily which is ideal for this service. 
 
-[![LoopBack](https://github.com/loopbackio/loopback-next/raw/master/docs/site/imgs/branding/Powered-by-LoopBack-Badge-(blue)-@2x.png)](http://loopback.io/)
+
+### logging and monitoring at scale
+For logging when there are millions of users I would implement a seperate logging service. This service would fire and forget a log file with all the 
+
