@@ -1,14 +1,6 @@
 import {repository} from '@loopback/repository';
-import {
-  param,
-  get,
-  getModelSchemaRef,
-  del,
-  response,
-  post,
-  requestBody,
-} from '@loopback/rest';
-import {UserStreams} from '../models';
+import {param, get, getModelSchemaRef, del, response} from '@loopback/rest';
+import {StreamsResponse, UserStreams} from '../models';
 import {UserStreamsRepository} from '../repositories';
 
 export class UserStreamsController {
@@ -17,48 +9,75 @@ export class UserStreamsController {
     public userStreamsRepository: UserStreamsRepository,
   ) {}
 
-  @get('/user-streams/{userId}/{sessionId}/{streamId}')
+  @get('/user-streams/{userId}/{sessionId}')
   @response(200, {
-    description: 'Get number of streams user is watching',
+    description: 'Number of streams user is watching',
     content: {
       'application/json': {
-        schema: getModelSchemaRef(UserStreams, {includeRelations: true}),
+        schema: getModelSchemaRef(StreamsResponse),
       },
     },
   })
-  async findById(
+  async getUserStreamsV1(
     @param.path.string('userId') id: string,
     @param.path.string('sessionId') sessionId: string,
-    @param.path.string('streamId') streamId: string,
-  ): Promise<UserStreams> {
-    return this.userStreamsRepository.findById(id);
+  ) {
+    let userInfo: UserStreams;
+
+    try {
+      userInfo = await this.userStreamsRepository.findById(id);
+    } catch (error) {
+      const freshUser = new UserStreams({
+        userId: id,
+        sessionIds: [sessionId],
+        noOfStreams: 1,
+      });
+
+      await this.userStreamsRepository.create(freshUser);
+
+      return new StreamsResponse({
+        userId: id,
+        noOfStreams: freshUser.noOfStreams,
+        sessionIds: freshUser.sessionIds,
+        allow: true,
+      });
+    }
+
+    if (
+      userInfo.noOfStreams === 3 &&
+      !userInfo.sessionIds.includes(sessionId)
+    ) {
+      return new StreamsResponse({
+        userId: id,
+        noOfStreams: userInfo.noOfStreams,
+        sessionIds: userInfo.sessionIds,
+        allow: false,
+      });
+    } else if (userInfo.sessionIds.includes(sessionId)) {
+      return new StreamsResponse({
+        userId: id,
+        noOfStreams: userInfo.noOfStreams,
+        sessionIds: userInfo.sessionIds,
+        allow: true,
+      });
+    } else {
+      userInfo.sessionIds.push(sessionId);
+      userInfo.noOfStreams++;
+      await this.userStreamsRepository.updateById(id, userInfo);
+      return new StreamsResponse({
+        userId: id,
+        noOfStreams: userInfo.noOfStreams,
+        sessionIds: userInfo.sessionIds,
+        allow: true,
+      });
+    }
   }
 
-  @post('/user-streams')
-  @response(200, {
-    description: 'UserStreams model instance',
-    content: {'application/json': {schema: getModelSchemaRef(UserStreams)}},
-  })
-  async create(
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(UserStreams, {
-            title: 'NewUserStreams',
-          }),
-        },
-      },
-    })
-    userStreams: UserStreams,
-  ): Promise<UserStreams> {
-    return this.userStreamsRepository.create(userStreams);
-  }
-
-  @del('/user-streams/{id}')
+  @del('/user-streams/{userId}')
   @response(204, {
     description: 'UserStreams DELETE success',
   })
-  async deleteById(@param.path.string('id') id: string): Promise<void> {
+  async deleteById(@param.path.string('userId') id: string): Promise<void> {
     await this.userStreamsRepository.deleteById(id);
   }
 }

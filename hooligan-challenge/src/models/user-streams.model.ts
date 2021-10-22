@@ -12,32 +12,18 @@ export class UserStreams extends Entity {
 
   @property({
     type: 'array',
-    itemType: 'object',
-    required: true,
-  })
-  streamInformation: object[];
-
-  @property({
-    type: 'array',
     itemType: 'string',
     required: true,
   })
   sessionIds: string[];
 
   @property({
-    type: 'array',
-    itemType: 'string',
+    type: 'number',
     required: true,
   })
-  streamIds: string[];
+  noOfStreams: number;
 
   constructor(data?: Partial<UserStreams>) {
     super(data);
   }
 }
-
-export interface UserStreamsRelations {
-  // describe navigational properties here
-}
-
-export type UserStreamsWithRelations = UserStreams & UserStreamsRelations;
