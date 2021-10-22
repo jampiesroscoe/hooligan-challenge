@@ -1,0 +1,10 @@
+{
+  "ids": {
+    "UserStreams": 2
+  },
+  "models": {
+    "UserStreams": {
+      "1": "{\"userId\":\"1\",\"streamInformation\":[{}],\"sessionIds\":[\"1\"],\"streamIds\":[\"1\"]}"
+    }
+  }
+}
