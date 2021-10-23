@@ -61,7 +61,7 @@ export class UserStreamsController {
       });
     } else if (userInfo.sessionIds.includes(sessionId)) {
       log.info(
-        `User iniated stream from existing session userId: ${id} sessionId:${sessionId}`,
+        `User iniated stream from existing session, userId: ${id} sessionId:${sessionId}`,
       );
       return new StreamsResponse({
         userId: id,
