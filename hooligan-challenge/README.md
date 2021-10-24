@@ -28,6 +28,9 @@ You can also run `node .` to skip the build step.
 
 Open http://127.0.0.1:3000 in your browser. To view the explorer and test the service.
 
+The service can also be tested on a browser or postman.
+Example URI: http://[::1]:3000/user-streams/1/1
+
 ## Tests
 
 ```sh
@@ -66,7 +69,7 @@ npm run lint:fix
 
 
 ## Improvements
-To improve the service, the controller needs to be refactored, the logic should be cleaned up and moved to a helperClass or a serviceClass instead of the controller. I would add more validations for the request and response. I would also add authorization either basic auth or jwt tokens depending on the client using the service.
+To improve the service, the controller needs to be refactored, the logic should be cleaned up and moved to a helperClass or a serviceClass instead of the controller. I would add more validations for the request by connecting to an existing DB that has all the userIds stored. I would also add authorization either basic auth or jwt tokens depending on the client using the service.
 
 More fields could also be added, such as more user details and stream details to improve functionality of the service.
 ### Scaling
