@@ -1,5 +1,6 @@
 # hooligan-challenge
 A service to check how many video streams a given user is watching and prevent a user from watching more than 3 video streams concurrently.
+Assumptions: each user has 1 account with a related userId, user can log into multiple devices to stream with 1 account. With each login a sessionId is generated, this is used to differentiate between the different streams a user watches on different devices. A user can stop one stream and start another in the same session, this would count as one stream. User cannot have more than 3 seperate sessions watching a stream.
 
 Loopback 4 was used to build this service.
 
@@ -25,7 +26,7 @@ npm start
 
 You can also run `node .` to skip the build step.
 
-Open http://127.0.0.1:3000 in your browser. To view the explorer and test the service using the explorer.
+Open http://127.0.0.1:3000 in your browser. To view the explorer and test the service.
 
 ## Tests
 
@@ -65,7 +66,7 @@ npm run lint:fix
 
 
 ## Improvements
-To improve the service, the controller needs to be refactored, the logic can be cleaned up. I would add more validations for the request and response. I would also add authorization either basic auth or jwt tokens depending on the client using the service.
+To improve the service, the controller needs to be refactored, the logic should be cleaned up and moved to a helperClass or a serviceClass instead of the controller. I would add more validations for the request and response. I would also add authorization either basic auth or jwt tokens depending on the client using the service.
 
 More fields could also be added, such as more user details and stream details to improve functionality of the service.
 ### Scaling
